@@ -39,23 +39,4 @@ router.get("/posts", async (req, res) => {
 	return res.status(200).json(postsFormated);
 });
 
-router.get("/posts", async (req, res) => {
-	const posts = await getFacebookApiInfo(`/${process.env.PAGE_ID}/posts`);
-	let postsFormated = [];
-
-	for (let i = 0; i < posts.length; i++) {
-		const insight = await getFacebookApiInfo(`/${posts[i].id}/insights?metric=post_reactions_by_type_total,post_impressions`);
-
-		postsFormated[i] = {
-			id: posts[i].id,
-			createdAt: moment(posts[i].created_time).format("DD/MM/YYYY HH:MM:ss"),
-			message: posts[i].message,
-			postReactionsByTypeTotal: insight[0].values[0].value,
-			postImpressions: insight[1].values[0].value,
-		};
-	}
-
-	return res.status(200).json(postsFormated);
-});
-
 module.exports = router;
